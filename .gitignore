@@ -1,13 +1,23 @@
-venv
-staticfiles
-./db.sqlite3
-.idea
-*~
-*.sqlite3
-_static_root
-_bots*s
-__temp*
+# API Key (절대 포함되어야 함)
+.env
+
+# oTree / Python 관련
+venv/
 __pycache__/
 *.py[cod]
-.DS_Store
+__temp*
+_static_root
+_bots*s
 *.otreezip
+
+# Database (실험 데이터 유출 방지)
+db.sqlite3
+*.sqlite3
+
+# OS / Editor 관련
+.idea
+.DS_Store
+*~
+
+# Static files
+staticfiles/

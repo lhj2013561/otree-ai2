@@ -1,0 +1,92 @@
+{% extends "otree/Page.html" %}
+{% block content %}
+
+<h3>AI와 대화를 나누어 주세요 (총 {{ C.MAX_TURNS }}회)</h3>
+
+<div id="chatbox" style="border:1px solid #ccc;height:300px;overflow:auto;padding:10px;background-color: #f9f9f9;"></div>
+
+<br>
+
+<input id="user_input" type="text" style="width:80%" placeholder="메시지를 입력하세요...">
+<button id="sendBtn" type="button" class="btn btn-primary">보내기</button>
+
+<input type="hidden" name="chat_log" id="chat_log">
+
+<br><br>
+
+<button class="otree-btn-next btn btn-success" id="nextBtn" style="display:none">다음 단계로 이동</button>
+
+<script>
+    let ai_turns = 0;
+    const MAX_TURNS = 5; // 실험 설계에 맞춰 조절
+
+    const input = document.getElementById("user_input");
+    const sendBtn = document.getElementById("sendBtn");
+    const nextBtn = document.getElementById("nextBtn");
+    const chatbox = document.getElementById("chatbox");
+
+    // 1. 서버로부터 응답을 받았을 때 실행되는 함수
+    function liveRecv(data) {
+        // 로딩 메시지 제거
+        const loading = document.getElementById("loading-msg");
+        if (loading) loading.remove();
+
+        if (data.text) {
+            ai_turns += 1;
+            append("AI", data.text);
+            
+            if (ai_turns >= MAX_TURNS) {
+                append("SYSTEM", "대화가 종료되었습니다. '다음' 버튼을 눌러주세요.");
+                nextBtn.style.display = "inline";
+                input.disabled = true;
+                sendBtn.disabled = true;
+            } else {
+                input.disabled = false;
+                sendBtn.disabled = false;
+                input.focus();
+            }
+        } else if (data.error) {
+            append("SYSTEM", "오류: " + data.error);
+            input.disabled = false;
+            sendBtn.disabled = false;
+        }
+    }
+
+    // 2. 서버로 메시지를 보내는 함수
+    function sendMessage() {
+        let text = input.value.trim();
+        if (text === "" || ai_turns >= MAX_TURNS) return;
+
+        input.disabled = true;
+        sendBtn.disabled = true;
+
+        append("You", text);
+        input.value = "";
+
+        // 로딩 메시지 표시
+        const loadingMsg = append("SYSTEM", "AI가 답변을 생성 중입니다...");
+        loadingMsg.id = "loading-msg";
+
+        // 🔥 중요: oTree 서버의 live_method로 데이터 전송
+        liveSend({'text': text});
+    }
+
+    function append(who, msg) {
+        const line = document.createElement("div");
+        line.innerHTML = "<b>" + who + ":</b> " + msg + "<br><br>";
+        chatbox.appendChild(line);
+        chatbox.scrollTop = chatbox.scrollHeight;
+        return line;
+    }
+
+    // 이벤트 리스너 등록
+    sendBtn.onclick = sendMessage;
+    input.onkeydown = function(e) {
+        if (e.key === "Enter") {
+            e.preventDefault();
+            sendMessage();
+        }
+    };
+</script>
+
+{% endblock %}
