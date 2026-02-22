@@ -1,1 +1,1 @@
-web: otree runprodserver 0.0.0.0:$PORT
+web: otree resetdb --noinput && otree runprodserver 0.0.0.0:$PORT
