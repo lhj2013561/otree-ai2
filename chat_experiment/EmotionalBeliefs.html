@@ -1,0 +1,103 @@
+{{ block title }}평소 생각에 관한 설문{{ endblock }}
+
+{{ block content }}
+<style>
+    /* 전체 설문 폭 제한 (PC에서 찢어지는 현상 방지) */
+    .survey-container {
+        max-width: 650px; 
+        margin: 0 auto;
+    }
+
+    .question-block {
+        margin-bottom: 60px;
+        padding: 20px;
+        border-bottom: 1px solid #eee;
+    }
+
+    .question-text {
+        font-size: 1.2rem;
+        font-weight: 700;
+        margin-bottom: 30px;
+        display: block;
+        line-height: 1.6;
+    }
+
+    /* 라디오 버튼 행 */
+    .radio-row {
+        display: flex;
+        justify-content: space-between;
+        padding: 0 10px;
+        margin-bottom: 10px;
+    }
+
+    .radio-unit {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        flex: 1;
+    }
+
+    /* 라디오 버튼 크기 */
+    input[type="radio"] {
+        transform: scale(1.7);
+        cursor: pointer;
+    }
+
+    /* 1. 전혀... 5. 매우... 설명 문구 행 */
+    .legend-row {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 15px;
+        font-size: 0.95rem;
+        font-weight: bold;
+        color: #444;
+    }
+
+    /* 설명 문구 너비 확보 (버튼과 수직 정렬 맞춤) */
+    .legend-item {
+        width: 140px; 
+        line-height: 1.3;
+    }
+
+    /* oTree 자동 생성 라벨(숫자) 숨기기 */
+    .radio-unit label { display: none !important; }
+</style>
+
+<div class="survey-container">
+    <div class="alert alert-secondary mb-5">모든 문항을 읽고 자신과 가장 가까운 번호에 체크해 주세요.</div>
+
+    <div class="question-block">
+        <div class="question-text">1. 슬픔이나 공포와 같은 부정적인 감정을 겉으로 드러내는 것은 약점의 신호라고 생각한다.</div>
+        
+        <div class="radio-row">
+            {{ for choice in form.neg_emot_belief_1 }}
+                <div class="radio-unit">{{ choice }}</div>
+            {{ endfor }}
+        </div>
+        
+        <div class="legend-row">
+            <div class="legend-item text-start">1. 전혀<br>그렇지 않다</div>
+            <div class="legend-item text-end">5. 매우<br>그렇다</div>
+        </div>
+    </div>
+
+    <div class="question-block">
+        <div class="question-text">2. 이것은 그 다음 문항이 들어갈 자리입니다.</div>
+        
+        <div class="radio-row">
+            {{ for choice in form.neg_emot_belief_2 }}
+                <div class="radio-unit">{{ choice }}</div>
+            {{ endfor }}
+        </div>
+        
+        <div class="legend-row">
+            <div class="legend-item text-start">1. 전혀<br>그렇지 않다</div>
+            <div class="legend-item text-end">5. 매우<br>그렇다</div>
+        </div>
+    </div>
+
+    <div class="d-grid gap-2 mt-5 mb-5">
+        <button class="btn btn-primary btn-lg shadow">다음 단계로 이동</button>
+    </div>
+</div>
+{{ endblock }}

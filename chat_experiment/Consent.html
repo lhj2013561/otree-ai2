@@ -1,0 +1,24 @@
+{{ block title }}
+    연구 참여 안내 및 동의
+{{ endblock }}
+
+{{ block content }}
+    <div class="card mb-4">
+        <div class="card-body" style="background-color: #f8f9fa;">
+            <h5>[연구 제목: 사회적 상호작용 및 정서 반응에 관한 연구]</h5>
+            <p>안녕하십니까? 본 연구는 가톨릭대학교 심리학과에서 진행하는 박사 과정 연구입니다.</p>
+            <p>(...상세 연구 설명 생략...)</p>
+        </div>
+    </div>
+
+    <div class="card border-primary mb-3">
+        <div class="card-body">
+            {{ formfields }}
+        </div>
+    </div>
+
+    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+        <button class="btn btn-primary btn-lg">다음 단계로 이동</button>
+    </div>
+
+{{ endblock }}
