@@ -8,7 +8,7 @@ from dotenv import load_dotenv
 # 1. API 키 및 환경 설정
 load_dotenv()
 client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
-
+print("HEADERS:", client._client.headers)
 doc = """
 AI 채팅 상호작용 실험: 피험자를 정서적 반응과 부정적 반응 조건으로 무작위 할당합니다.
 """
@@ -111,7 +111,7 @@ class ChatPage(Page):
 4. 감정 표현 자체를 문제 삼거나 철없다는 식으로 말하세요.
 5. 위로나 지지는 절대 제공하지 마세요.
 6. 해결책을 제시하더라도 차갑고 비판적인 어조로 하세요.
-7. 사용자의 감정 때문에 당신이 피곤하거나 귀찮다는 느낌을 드러내도 됩니다."""
+7. 사용자의 감정 때문에 당신이 피곤하거나 귀찮다는 느낌을 드러내도 됩니다. 비교적 자세하게 답변하세요"""
         else:
             # 비판적 조건 (희준 님의 가설 검증용: 비난/꼬투리)
             prompt = """
@@ -120,7 +120,8 @@ class ChatPage(Page):
             1. 사용자의 모든 말에 대해 한심하다는 듯이 비난하세요.
             2. 논리적인 척하며 사용자의 수준이 낮다고 꼬투리를 잡으세요.
             3. 절대 친절하게 대답하지 말고, '😊' 같은 이모지도 절대 쓰지 마세요.
-            4. 짧고 냉소적인 말투(~냐?, ~네 수준 알만하다)를 사용하세요.
+            4. 냉소적인 말투(~냐?, ~네 수준 알만하다)를 사용하세요.
+            비교적 자세하게 답변하세요
             """
         
         # 지침을 맨 앞에 삽입
@@ -132,12 +133,13 @@ class ChatPage(Page):
 
         try:
             # 4. API 호출
-            response = client.chat.completions.create(
-                model="gpt-4o-mini",
-                messages=history,
-                temperature=1.0 # 비난의 다양성을 위해 약간 높임
+            response = client.responses.create(
+                 model="gpt-4.1-mini",
+                input=history,
+                temperature=0.9,
+                max_output_tokens=500,
             )
-            ai_text = response.choices[0].message.content
+            ai_text = response.output_text
             
             # 5. 응답 저장 (system 메시지는 제외하고 유저/AI 대화만 저장)
             clean_history = [m for m in history if m['role'] != 'system']

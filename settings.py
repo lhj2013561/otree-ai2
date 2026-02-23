@@ -28,3 +28,10 @@ ADMIN_PASSWORD = environ.get('OTREE_ADMIN_PASSWORD')
 DEMO_PAGE_INTRO_HTML = ""
 
 SECRET_KEY = '1314258008561'
+
+ROOMS = [
+    dict(
+        name='ai_chat_room',
+        display_name='AI 채팅 실험',
+    ),
+]
