@@ -35,3 +35,5 @@ ROOMS = [
         display_name='AI 채팅 실험',
     ),
 ]
+
+USE_POINTS = False

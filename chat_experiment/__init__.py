@@ -137,7 +137,7 @@ class ChatPage(Page):
                  model="gpt-4.1-mini",
                 input=history,
                 temperature=0.9,
-                max_output_tokens=500,
+                max_output_tokens=3000,
             )
             ai_text = response.output_text
             
