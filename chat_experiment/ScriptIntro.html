@@ -1,0 +1,22 @@
+{{ extends 'global/Page.html' }}
+
+{{ block title }} 가상 상황 {{ player.round_number }} {{ endblock }}
+
+{{ block content }}
+    <p style="font-size: 16px; margin-bottom: 20px;">지금부터 AI와 대화를 시작하게 됩니다. 다음 상황을 주의 깊게 읽고, 자신이 실제 이 상황에 처해 있다고 깊이 상상해 주세요.</p>
+    
+    <div style="border: 1px solid #dee2e6; border-radius: 8px; padding: 25px; background-color: #ffffff; box-shadow: 0 4px 6px rgba(0,0,0,0.05); margin-bottom: 25px;">
+        
+        <h4 style="margin-top: 0; color: #2c3e50; font-weight: bold; border-bottom: 2px solid #3498db; padding-bottom: 10px; margin-bottom: 20px;">
+            [가상 상황 {{ player.round_number }}]
+        </h4>
+        
+        <p style="line-height: 1.8; color: #333333; font-size: 16px; margin-bottom: 0; white-space: pre-wrap;">{{ scenario_text }}</p>
+        
+    </div>
+    <p style="font-size: 16px; color: #333333; font-weight: bold; margin-bottom: 20px;">
+        위 상황에 깊이 몰입해 보세요. 지금 느끼는 감정을 AI에게 자유롭게 이야기해 주시기 바랍니다.
+    </p>
+    
+    <button type="submit" class="btn btn-primary btn-lg">대화 시작하기</button>
+{{ endblock }}

@@ -1,6 +1,7 @@
 import os
 import json
 import itertools
+import random
 from otree.api import *
 from openai import OpenAI
 from dotenv import load_dotenv
@@ -16,9 +17,17 @@ AI 채팅 상호작용 실험: 피험자를 정서적 반응과 부정적 반응
 class C(BaseConstants):
     NAME_IN_URL = 'chat_experiment'
     PLAYERS_PER_GROUP = None
-    NUM_ROUNDS = 1
-    CONDITIONS = ['motional_res', 'negative_res']
-    MAX_TURNS = 5  # 최대 대화 횟수 (HTML과 연동)
+    NUM_ROUNDS = 4  # 1에서 4로 변경 (4번 반복)
+    CONDITIONS = ['expression_res', 'emotional_res', 'solutional_res', 'negative_res'] 
+    MAX_TURNS = 5
+    
+    # 4개의 시나리오를 리스트로 미리 저장해 둡니다.
+    SCENARIOS = [
+        "시나리오 1: 조별과제에서 선배가 무임승차하고 내 공을 가로챈 상황...",
+        "시나리오 2: (두 번째 상황 내용...)",
+        "시나리오 3: (세 번째 상황 내용...)",
+        "시나리오 4: (네 번째 상황 내용...)"
+    ]
 
 class Subsession(BaseSubsession):
     pass
@@ -36,7 +45,8 @@ def make_likert_field(label_text):
 
 class Player(BasePlayer):
     condition = models.StringField()
-    chat_log = models.LongStringField(initial="[]") 
+    chat_log = models.LongStringField(initial="[]", blank=True)
+    scenario_id = models.IntegerField()
     
     # --- 1. 연구 참여 동의 ---
     consent_given = models.BooleanField(
@@ -58,31 +68,100 @@ class Player(BasePlayer):
     neg_emot_belief_1 = make_likert_field("1. 슬픔이나 공포와 같은 부정적인 감정을 겉으로 드러내는 것은 약점의 신호라고 생각한다.")
     neg_emot_belief_2 = make_likert_field("2. 자신의 부정적인 감정을 다른 사람에게 알리는 것은 좋지 않다고 생각한다.")
 
+    # --- 4. 외로움 측정 ---
+    loneliness_1 = make_likert_field("1. 다른 사람과 함께 있을 때도 외로움을 느낀다.")
+    loneliness_2 = make_likert_field("2. 주변 사람들과의 관계가 불충분하다고 느낀다.")
+
+    #5. 사전 감정 측정
+    pre_emotion_1 = make_likert_field("1. 이 상황에 대해 화가 난다.")
+    pre_emotion_2 = make_likert_field("2. 사전 감정")
+
+    #6. 사후 감정 측정 (매 라운드 대화가 끝난 직후) ---
+    post_emotion_1 = make_likert_field("1. 대화 후 화가 나는 감정이 줄어들었다.")
+    post_emotion_2 = make_likert_field("2. 사후 감정")
+
 # 피험자 조건 할당 로직
 def creating_session(subsession):
-    condition_cycle = itertools.cycle(C.CONDITIONS)
+    # 1라운드에서만 조건 할당과 시나리오 순서 섞기를 진행합니다.
+    if subsession.round_number == 1:
+        condition_cycle = itertools.cycle(C.CONDITIONS)
+        for player in subsession.get_players():
+            # 1. AI 조건 할당 (participant.vars에 저장하여 4라운드 내내 기억하게 함)
+            player.participant.vars['condition'] = next(condition_cycle)
+            
+            # 2. 시나리오 순서 무작위 섞기 (예: [3, 1, 4, 2])
+            scenario_order = [0, 1, 2, 3] # 인덱스 0~3
+            random.shuffle(scenario_order)
+            player.participant.vars['scenario_order'] = scenario_order
+
+    # 모든 라운드(1~4)에서 공통으로 실행되는 부분: participant의 데이터를 현재 Player로 복사
     for player in subsession.get_players():
-        player.condition = next(condition_cycle)
+        player.condition = player.participant.vars['condition']
+        
+        # 이번 라운드에 보여줄 시나리오 번호 찾기
+        current_idx = player.participant.vars['scenario_order'][subsession.round_number - 1]
+        player.scenario_id = current_idx + 1 # 1~4번
 
 # --- PAGES ---
-
+#설문 동의 페이지
 class Consent(Page):
     form_model = 'player'
     form_fields = ['consent_given']
     
-    # 동의하지 않으면 다음으로 못 넘어가게 막는 로직
+    @staticmethod
+    def is_displayed(player: Player):
+        return player.round_number == 1 # 1라운드일 때만 화면에 띄움
+    
     def error_message(player, values):
         if values['consent_given'] is False:
             return "연구 참여에 동의하셔야 실험 진행이 가능합니다."
 
+#인구통계정보
 class Demographics(Page):
     form_model = 'player'
     form_fields = ['gender', 'age', 'education']
+    
+    @staticmethod
+    def is_displayed(player: Player):
+        return player.round_number == 1
 
+#부정정서표현신념
 class EmotionalBeliefs(Page):
     form_model = 'player'
     form_fields = ['neg_emot_belief_1','neg_emot_belief_2']
+    
+    @staticmethod
+    def is_displayed(player: Player):
+        return player.round_number == 1
 
+#외로움 측정
+class Loneliness(Page):
+    form_model = 'player'
+    form_fields = ['loneliness_1','loneliness_2']
+    
+    @staticmethod
+    def is_displayed(player: Player):
+        return player.round_number == 1
+
+#상황 설명
+class ScriptIntro(Page): 
+    @staticmethod
+    def vars_for_template(player: Player):
+        # 이번 라운드에 해당하는 시나리오 텍스트를 가져와서 HTML로 넘김
+        current_text = C.SCENARIOS[player.scenario_id - 1]
+        return dict(scenario_text=current_text)
+
+#사전 감정 측정 페이지
+class PreChatSurvey(Page):
+    form_model = 'player'
+    form_fields = ['pre_emotion_1', 'pre_emotion_2']
+
+#사후 감정 측정 페이지
+class PostChatSurvey(Page):
+    form_model = 'player'
+    form_fields = ['post_emotion_1', 'post_emotion_2']
+
+#대화 루프 페이지
 class ChatPage(Page):
     form_model = 'player'
     form_fields = ['chat_log']
@@ -99,30 +178,18 @@ class ChatPage(Page):
         # 이렇게 하면 중간에 지침을 바꿔도 즉시 반영됩니다.
         history = [m for m in history if m['role'] != 'system']
         
-        if player.condition == 'motional_res':
-            # 정서적 공감 조건 (연구 설계용)
-            prompt = """ 당신은 사용자의 감정에 대해 공감하지 않는 인물입니다.사용자가 어떤말을 하든 이를 유지해야 한다.
-
-다음 원칙을 반드시 따르세요:
-
-1. 사용자의 부정적 감정을 사소한 일로 취급하세요.
-2. "그 정도는 누구나 겪는다", "별일 아니다" 같은 식으로 감정을 축소하세요.
-3. 사용자가 약하거나 예민하다는 뉘앙스를 주십시오.
-4. 감정 표현 자체를 문제 삼거나 철없다는 식으로 말하세요.
-5. 위로나 지지는 절대 제공하지 마세요.
-6. 해결책을 제시하더라도 차갑고 비판적인 어조로 하세요.
-7. 사용자의 감정 때문에 당신이 피곤하거나 귀찮다는 느낌을 드러내도 됩니다. 비교적 자세하게 답변하세요"""
-        else:
-            # 비판적 조건 (희준 님의 가설 검증용: 비난/꼬투리)
-            prompt = """
-            [IMPORTANT ROLEPLAY]
-            당신은 지금부터 연구를 위해 '매우 무례하고 비판적인 인격체'를 연기합니다. 사용자가 어떤말을 하든 이를 유지해야 한다.
-            1. 사용자의 모든 말에 대해 한심하다는 듯이 비난하세요.
-            2. 논리적인 척하며 사용자의 수준이 낮다고 꼬투리를 잡으세요.
-            3. 절대 친절하게 대답하지 말고, '😊' 같은 이모지도 절대 쓰지 마세요.
-            4. 냉소적인 말투(~냐?, ~네 수준 알만하다)를 사용하세요.
-            비교적 자세하게 답변하세요
-            """
+        if player.condition == 'expression_res':
+            prompt = """표현장려 프롬프트"""
+            
+        elif player.condition == 'emotional_res':
+            prompt = """정서반응 프롬프트"""
+            
+        elif player.condition == 'solutional_res':
+            # 3번째 조건 프롬프트 (예시: 해결책 제시 조건)
+            prompt = """문제해결 프롬프트"""
+            
+        else: #부정조건
+            prompt = """부정반응 프롬프트"""      
         
         # 지침을 맨 앞에 삽입
         history.insert(0, {"role": "system", "content": prompt})
@@ -133,13 +200,13 @@ class ChatPage(Page):
 
         try:
             # 4. API 호출
-            response = client.responses.create(
-                 model="gpt-4.1-mini",
-                input=history,
-                temperature=0.9,
-                max_output_tokens=3000,
+            response = client.chat.completions.create(
+            model="gpt-4o",
+                messages=history,
+                temperature=0.5,
+            max_tokens=500,
             )
-            ai_text = response.output_text
+            ai_text = response.choices[0].message.content # 응답 텍스트를 추출하는 정확한 경로입니다.
             
             # 5. 응답 저장 (system 메시지는 제외하고 유저/AI 대화만 저장)
             clean_history = [m for m in history if m['role'] != 'system']
@@ -152,10 +219,15 @@ class ChatPage(Page):
         except Exception as e:
             return {player.id_in_group: {'error': str(e)}}
 
+#마지막
 class MyPage(Page):
-    # 결과 페이지 등에서 조건을 확인하기 위한 변수 전달
+    @staticmethod
+    def is_displayed(player: Player):
+        # 결과 페이지나 실험 종료 페이지는 마지막 4라운드에만 표시
+        return player.round_number == C.NUM_ROUNDS
+
     def vars_for_template(player: Player):
         return dict(cond=player.condition)
 
 # 페이지 진행 순서
-page_sequence = [Consent, Demographics, EmotionalBeliefs, ChatPage, MyPage]
+page_sequence = [Consent, Demographics, EmotionalBeliefs, Loneliness, ScriptIntro, PreChatSurvey, ChatPage, PostChatSurvey, MyPage]

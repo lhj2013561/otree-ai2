@@ -1,0 +1,20 @@
+{{ extends 'global/Page.html' }}
+
+{{ block title }} 사전 감정 측정 (가상 상황 {{ player.round_number }}) {{ endblock }}
+
+{{ block content }}
+    <div style="margin-bottom: 20px;">
+        <p style="font-size: 16px; color: #333333; font-weight: bold;">
+            방금 읽으신 시나리오를 다시 한번 떠올려 주세요.
+        </p>
+        <p style="font-size: 15px; color: #555555;">
+            당신이 해당 시나리오의 주인공이라 생각하고 가장 가까운 곳에 체크해 주시기 바랍니다.
+        </p>
+    </div>
+    
+    <div style="background-color: #f8f9fa; padding: 20px; border-radius: 8px; margin-bottom: 20px;">
+        {{ formfields }}
+    </div>
+
+    <button type="submit" class="btn btn-primary btn-lg">대화로 넘어가기</button>
+{{ endblock }}

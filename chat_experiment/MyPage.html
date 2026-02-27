@@ -1,9 +1,35 @@
+{{ extends 'global/Page.html' }}
+
 {{ block title }}
-    Page title
+    실험이 종료되었습니다
 {{ endblock }}
+
 {{ block content }}
+    <div style="border: 1px solid #dee2e6; border-radius: 8px; padding: 30px; background-color: #f8f9fa; text-align: center; margin-top: 20px;">
+        <h3 style="color: #2c3e50; margin-bottom: 20px;">연구에 참여해 주셔서 진심으로 감사합니다.</h3>
+        
+        <p style="font-size: 17px; line-height: 1.6; color: #333333; margin-bottom: 30px;">
+            모든 실험 절차가 완료되었습니다.
+        </p>
 
-    {{ formfields }}
-    {{ next_button }}
+        <hr style="margin: 30px 0;">
 
+        <p style="color: #e74c3c; font-weight: bold; margin-bottom: 20px;">
+            아래 버튼을 눌러 창을 닫거나, 브라우저의 탭을 직접 닫아주시기 바랍니다.
+        </p>
+
+        <button type="button" class="btn btn-danger btn-lg" onclick="window.close();">
+            실험 종료 및 창 닫기
+        </button>
+    </div>
+
+    <script>
+        // 버튼을 눌렀을 때 작동하지 않는 브라우저를 위해 알림 추가
+        function closeWindow() {
+            window.close();
+            if (window.opener == null) {
+                alert("보안 정책상 자동으로 창을 닫을 수 없습니다. 브라우저 탭을 직접 닫아주세요.");
+            }
+        }
+    </script>
 {{ endblock }}
