@@ -3,18 +3,105 @@
 {{ block title }} 사전 감정 측정 (가상 상황 {{ player.round_number }}) {{ endblock }}
 
 {{ block content }}
-    <div style="margin-bottom: 20px;">
-        <p style="font-size: 16px; color: #333333; font-weight: bold;">
-            방금 읽으신 시나리오를 다시 한번 떠올려 주세요.
-        </p>
-        <p style="font-size: 15px; color: #555555;">
-            당신이 해당 시나리오의 주인공이라 생각하고 가장 가까운 곳에 체크해 주시기 바랍니다.
-        </p>
-    </div>
-    
-    <div style="background-color: #f8f9fa; padding: 20px; border-radius: 8px; margin-bottom: 20px;">
-        {{ formfields }}
+<style>
+    /* 전체 설문 폭 제한 */
+    .survey-container {
+        max-width: 650px; 
+        margin: 0 auto;
+    }
+
+    .question-block {
+        margin-bottom: 60px;
+        padding: 20px;
+        border-bottom: 1px solid #eee;
+    }
+
+    .question-text {
+        font-size: 1.2rem;
+        font-weight: 700;
+        margin-bottom: 30px;
+        display: block;
+        line-height: 1.6;
+    }
+
+    /* 라디오 버튼 행 */
+    .radio-row {
+        display: flex;
+        justify-content: space-between;
+        padding: 0 10px;
+        margin-bottom: 10px;
+    }
+
+    .radio-unit {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        flex: 1;
+    }
+
+    /* 라디오 버튼 크기 */
+    input[type="radio"] {
+        transform: scale(1.7);
+        cursor: pointer;
+    }
+
+    /* 1. 전혀... 5. 매우... 설명 문구 행 */
+    .legend-row {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 15px;
+        font-size: 0.95rem;
+        font-weight: bold;
+        color: #444;
+    }
+
+    /* 설명 문구 너비 확보 */
+    .legend-item {
+        width: 140px; 
+        line-height: 1.3;
+    }
+
+    /* oTree 자동 생성 라벨(숫자) 숨기기 */
+    .radio-unit label { display: none !important; }
+</style>
+
+<div class="survey-container">
+    <div class="alert alert-secondary mb-5">
+        방금 읽으신 시나리오의 주인공이라 생각하고 느끼시는 감정을 응답해 주세요.
     </div>
 
-    <button type="submit" class="btn btn-primary btn-lg">대화로 넘어가기</button>
+    <div class="question-block">
+        <div class="question-text">1. 이 상황에 대해 화가 난다.</div>
+        
+        <div class="radio-row">
+            {{ for choice in form.pre_emotion_1 }}
+                <div class="radio-unit">{{ choice }}</div>
+            {{ endfor }}
+        </div>
+        
+        <div class="legend-row">
+            <div class="legend-item text-start">1. 전혀<br>그렇지 않다</div>
+            <div class="legend-item text-end">5. 매우<br>그렇다</div>
+        </div>
+    </div>
+
+    <div class="question-block">
+        <div class="question-text">2. 이 상황에 대해 억울함을 느낀다.</div>
+        
+        <div class="radio-row">
+            {{ for choice in form.pre_emotion_2 }}
+                <div class="radio-unit">{{ choice }}</div>
+            {{ endfor }}
+        </div>
+        
+        <div class="legend-row">
+            <div class="legend-item text-start">1. 전혀<br>그렇지 않다</div>
+            <div class="legend-item text-end">5. 매우<br>그렇다</div>
+        </div>
+    </div>
+
+    <div class="d-grid gap-2 mt-5 mb-5">
+        <button class="btn btn-primary btn-lg shadow">대화로 이동하기</button>
+    </div>
+</div>
 {{ endblock }}

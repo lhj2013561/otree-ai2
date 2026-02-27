@@ -1,7 +1,7 @@
 {% extends "otree/Page.html" %}
 {% block content %}
 
-<h3>AI와 대화를 나누어 주세요 (총 {{ C.MAX_TURNS }}회)</h3>
+<h3>당신은 이야기의 주인공이 되어 AI에게 당신의 감정을 이야기 해 보세요 (총 {{ C.MAX_TURNS }}회)</h3>
 
 <div id="chatbox" style="border:1px solid #ccc;height:300px;overflow:auto;padding:10px;background-color: #f9f9f9;"></div>
 
@@ -18,7 +18,7 @@
 
 <script>
     let ai_turns = 0;
-    const MAX_TURNS = 5; // 실험 설계에 맞춰 조절
+    const MAX_TURNS = 2; // 실험 설계에 맞춰 조절
 
     const input = document.getElementById("user_input");
     const sendBtn = document.getElementById("sendBtn");

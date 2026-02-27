@@ -1,23 +1,108 @@
 {{ extends 'global/Page.html' }}
 
-{{ block title }} 사후 감정 측정 (가상 상황 {{ player.round_number }}) {{ endblock }}
+{{ block title }}사후 감정 측정 (가상 상황 {{ player.round_number }}){{ endblock }}
 
 {{ block content }}
-    <div style="margin-bottom: 20px;">
-                <p style="font-size: 15px; color: #555555;">
-             당신이 해당 시나리오의 주인공이라 생각하고 대화를 나누고 난 후, 현재 귀하의 감정 상태는 어떻게 변했는지 체크해 주시기 바랍니다.
-        </p>
-    </div>
-    
-    <div style="background-color: #f8f9fa; padding: 20px; border-radius: 8px; margin-bottom: 20px;">
-        {{ formfields }}
+<style>
+    /* 사전 측정 페이지와 동일한 스타일 유지 */
+    .survey-container {
+        max-width: 650px; 
+        margin: 0 auto;
+    }
+
+    .question-block {
+        margin-bottom: 60px;
+        padding: 20px;
+        border-bottom: 1px solid #eee;
+    }
+
+    .question-text {
+        font-size: 1.2rem;
+        font-weight: 700;
+        margin-bottom: 30px;
+        display: block;
+        line-height: 1.6;
+    }
+
+    .radio-row {
+        display: flex;
+        justify-content: space-between;
+        padding: 0 10px;
+        margin-bottom: 10px;
+    }
+
+    .radio-unit {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        flex: 1;
+    }
+
+    input[type="radio"] {
+        transform: scale(1.7);
+        cursor: pointer;
+    }
+
+    .legend-row {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 15px;
+        font-size: 0.95rem;
+        font-weight: bold;
+        color: #444;
+    }
+
+    .legend-item {
+        width: 140px; 
+        line-height: 1.3;
+    }
+
+    .radio-unit label { display: none !important; }
+</style>
+
+<div class="survey-container">
+    <div class="alert alert-secondary mb-5">
+        대화를 나눈 후, 시나리오의 주인공이라 생각하고 느끼시는 감정을 응답해 주세요.
     </div>
 
-    <button type="submit" class="btn btn-primary btn-lg">
-        {{ if player.round_number == C.NUM_ROUNDS }}
-            실험 완료하기
-        {{ else }}
-            다음 상황으로 넘어가기
-        {{ endif }}
-    </button>
+    <div class="question-block">
+        <div class="question-text">1. 나는 화난다.</div>
+        
+        <div class="radio-row">
+            {{ for choice in form.post_emotion_1 }}
+                <div class="radio-unit">{{ choice }}</div>
+            {{ endfor }}
+        </div>
+        
+        <div class="legend-row">
+            <div class="legend-item text-start">1. 전혀<br>그렇지 않다</div>
+            <div class="legend-item text-end">5. 매우<br>그렇다</div>
+        </div>
+    </div>
+
+    <div class="question-block">
+        <div class="question-text">2. 나는 공감 받은 느낌이 든다.</div>
+        
+        <div class="radio-row">
+            {{ for choice in form.post_emotion_2 }}
+                <div class="radio-unit">{{ choice }}</div>
+            {{ endfor }}
+        </div>
+        
+        <div class="legend-row">
+            <div class="legend-item text-start">1. 전혀<br>그렇지 않다</div>
+            <div class="legend-item text-end">5. 매우<br>그렇다</div>
+        </div>
+    </div>
+
+    <div class="d-grid gap-2 mt-5 mb-5">
+        <button class="btn btn-primary btn-lg shadow">
+            {{ if player.round_number == C.NUM_ROUNDS }}
+                실험 완료하기
+            {{ else }}
+                다음 상황으로 넘어가기
+            {{ endif }}
+        </button>
+    </div>
+</div>
 {{ endblock }}
