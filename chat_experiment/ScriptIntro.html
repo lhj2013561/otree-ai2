@@ -1,22 +1,97 @@
 {{ extends 'global/Page.html' }}
 
-{{ block title }} 부정적 상황 {{ endblock }}
+{{ block title }} {{ endblock }}
 
 {{ block content }}
-    <p style="font-size: 16px; margin-bottom: 20px;">지금부터 AI와 대화를 시작하게 됩니다. 다음 상황을 주의 깊게 읽고, 자신이 실제 이 상황에 처해 있다고 깊이 상상해 주세요.</p>
-    
-    <div style="border: 1px solid #dee2e6; border-radius: 8px; padding: 25px; background-color: #ffffff; box-shadow: 0 4px 6px rgba(0,0,0,0.05); margin-bottom: 25px;">
-        
-        <h4 style="margin-top: 0; color: #2c3e50; font-weight: bold; border-bottom: 2px solid #3498db; padding-bottom: 10px; margin-bottom: 20px;">
-            다음 이야기속 주인공이 되어 읽어주세요
-        </h4>
-        
-        <p style="line-height: 1.8; color: #333333; font-size: 16px; margin-bottom: 0; white-space: pre-wrap;">{{ scenario_text }}</p>
-        
-    </div>
-    <p style="font-size: 16px; color: #333333; font-weight: bold; margin-bottom: 20px;">
-        위 상황에 깊이 몰입해 보세요. 그 다음 다음으로 넘어가 주세요.
-    </p>
-    
-    <button type="submit" class="btn btn-primary btn-lg">다음으로</button>
+
+<style>
+
+.page-wrap{
+    max-width:720px;
+    margin:0 auto;
+}
+
+.intro-text{
+    font-size:17px;
+    line-height:1.7;
+    margin-bottom:30px;
+    color:#555;
+}
+
+/* 🔥 스토리 카드 */
+.scenario-card{
+    background:#ffffff;
+    border-radius:14px;
+    padding:48px;
+    box-shadow:0 12px 28px rgba(0,0,0,0.12);
+    margin-bottom:30px;
+    border:1px solid #eee;
+}
+
+.scenario-title{
+    font-size:18px;
+    font-weight:600;
+    margin-bottom:30px;
+    color:#444;
+}
+
+/* 🔥 스토리 텍스트 크게 */
+.scenario-text{
+    font-size:22px;
+    line-height:1.9;
+    font-weight:500;
+    color:#111;
+}
+
+/* 보조 지시문 */
+.immersion-box{
+    background:#f5f6f7;
+    border-radius:10px;
+    padding:22px;
+    font-size:16px;
+    color:#555;
+    margin-bottom:35px;
+}
+
+.next-btn{
+    width:100%;
+    font-size:18px;
+    padding:14px;
+}
+
+</style>
+
+<div class="page-wrap">
+
+<div class="intro-text">
+지금부터 <b>AI와 대화</b>를 시작하게 됩니다.<br>
+아래 상황을 천천히 읽고 <b>자신이 실제로 이 상황에 처해 있다고 상상해 보세요.</b>
+</div>
+
+
+<div class="scenario-card">
+
+<div class="scenario-title">
+다음 상황을 읽어 주세요
+</div>
+
+<div class="scenario-text">
+{{ scenario_text }}
+</div>
+
+</div>
+
+
+<div class="immersion-box">
+이 상황의 <b>주인공이 바로 당신이라고 생각해 보세요.</b><br>
+이 상황에서 어떤 감정이 들 것 같은지 잠시 떠올려 보세요.
+</div>
+
+
+<button type="submit" class="btn btn-primary btn-lg next-btn">
+다음 단계로 이동
+</button>
+
+</div>
+
 {{ endblock }}

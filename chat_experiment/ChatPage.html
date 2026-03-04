@@ -72,12 +72,15 @@
     }
 
     function append(who, msg) {
-        const line = document.createElement("div");
-        line.innerHTML = "<b>" + who + ":</b> " + msg + "<br><br>";
-        chatbox.appendChild(line);
-        chatbox.scrollTop = chatbox.scrollHeight;
-        return line;
-    }
+    const line = document.createElement("div");
+    msg = msg.replace(/\n/g, "<br>");
+
+    line.innerHTML = "<b>" + who + ":</b> " + msg + "<br><br>";
+
+    chatbox.appendChild(line);
+    chatbox.scrollTop = chatbox.scrollHeight;
+    return line;
+}
 
     // 이벤트 리스너 등록
     sendBtn.onclick = sendMessage;
