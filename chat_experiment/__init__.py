@@ -24,10 +24,10 @@ class C(BaseConstants):
     GROUPS = ['G1','G2','G3','G4']
 
     TURN_SEQUENCE = {
-        "G1": ["intro","solution","solution","validation","validation","closing"],
-        "G2": ["intro","solution","solution","validation","validation","closing"],
+        "G1": ["intro","solution","solution","solution","solution","closing"],
+        "G2": ["intro","validation","validation","validation","validation","closing"],
         "G3": ["intro","solution","solution","validation","validation","closing"],
-        "G4": ["intro","solution","solution","validation","validation","closing"],
+        "G4": ["intro","validation","validation","solution","solution","closing"],
     }
 
     SCENARIOS = [
