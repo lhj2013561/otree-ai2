@@ -32,8 +32,7 @@ SECRET_KEY = '1314258008561'
 ROOMS = [
     dict(
         name='ai_chat_study1',
-        display_name='st1',
-        participant_label_file=None,
+        display_name='st1'
     ),
 ]
 
