@@ -380,10 +380,12 @@ Response style:
         try:
             response = client.chat.completions.create(
                 model="gpt-4o",
-                temperature=0.9,
+                temperature=1.1,
                 messages=messages_for_api,
                 max_tokens=800,
-                top_p=0.9
+                top_p=1.0,
+                frequency_penalty=0.6,
+                presence_penalty=0.2
             )
             ai_text = response.choices[0].message.content
 
