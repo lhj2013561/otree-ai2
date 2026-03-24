@@ -1,7 +1,7 @@
 {{ extends 'global/Page.html' }}
 
 {{ block title }}
-사후 감정 측정 (가상 상황 {{ player.round_number }})
+사후 감정 측정 (상황 {{ player.round_number }})
 {{ endblock }}
 
 {{ block content }}
@@ -23,6 +23,7 @@
     font-size:1.2rem;
     font-weight:700;
     margin-bottom:30px;
+    line-height:1.6;
 }
 
 .radio-row{
@@ -62,89 +63,69 @@ input[type="radio"]{
     display:none !important;
 }
 
+.highlight-instruction {
+    font-size: 1.3rem;
+    font-weight: 700;
+    text-align: center;
+    word-break: keep-all;
+    border-radius: 8px;
+    padding: 22px 18px;
+    
+    background-color: #f4f6f8;
+    color: #1f2933;
+    border: 1.5px solid #cfd6de;
+}
+
 </style>
 
 
 <div class="survey-container">
 
-<div class="alert alert-secondary mb-5">
-대화를 나눈 후, 시나리오의 주인공이라 생각하고 느끼시는 감정을 응답해 주세요.
+<div class="highlight-instruction mb-5 shadow-sm">
+    대화를 나눈 후, 시나리오의 주인공이라 생각하고 느끼시는 감정을 응답해 주세요.
 </div>
 
 
-<!-- 문항 1 -->
-
+{{ for field in form }}
 <div class="question-block">
 
-<div class="question-text">
-{{ form.post_emotion_1.label }}
-</div>
+    <div class="question-text">
+        {{ field.label }}
+    </div>
 
-<div class="radio-row">
-{{ for choice in form.post_emotion_1 }}
-<div class="radio-unit">
-{{ choice }}
+    <div class="radio-row">
+        {{ for choice in field }}
+        <div class="radio-unit">
+            {{ choice }}
+        </div>
+        {{ endfor }}
+    </div>
+
+    <div class="legend-row">
+        <div class="legend-item text-start">
+            1. 전혀<br>그렇지 않다
+        </div>
+
+        <div class="legend-item text-end">
+            5. 매우<br>그렇다
+        </div>
+    </div>
+
 </div>
 {{ endfor }}
-</div>
 
-<div class="legend-row">
-<div class="legend-item text-start">
-1. 전혀<br>그렇지 않다
-</div>
-
-<div class="legend-item text-end">
-5. 매우<br>그렇다
-</div>
-</div>
-
-</div>
-
-
-
-<!-- 문항 2 -->
-
-<div class="question-block">
-
-<div class="question-text">
-{{ form.post_emotion_2.label }}
-</div>
-
-<div class="radio-row">
-{{ for choice in form.post_emotion_2 }}
-<div class="radio-unit">
-{{ choice }}
-</div>
-{{ endfor }}
-</div>
-
-<div class="legend-row">
-<div class="legend-item text-start">
-1. 전혀<br>그렇지 않다
-</div>
-
-<div class="legend-item text-end">
-5. 매우<br>그렇다
-</div>
-</div>
-
-</div>
-
-
-
-<!-- 다음 버튼 -->
 
 <div class="d-grid gap-2 mt-5 mb-5">
 
-<button class="otree-btn-next btn btn-primary btn-lg shadow">
+    <button class="otree-btn-next btn btn-primary btn-lg shadow">
 
-{{ if player.round_number == C.NUM_ROUNDS }}
-실험 완료하기
-{{ else }}
-다음 상황으로 넘어가기
-{{ endif }}
+        {{ if player.round_number == C.NUM_ROUNDS }}
+        대화 마무리하기
+        {{ else }}
+        다음 상황으로 넘어가기
+        {{ endif }}
 
-</button>
+    </button>
 
 </div>
 

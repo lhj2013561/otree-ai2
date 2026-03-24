@@ -1,58 +1,356 @@
-{% extends "otree/Page.html" %}
-{% block content %}
+{{ extends "global/Page.html" }}
+{{ block content }}
 
-<h3>당신은 이야기의 주인공이 되어 AI에게 당신의 감정을 이야기 해 보세요 (총 {{ C.MAX_TURNS }}회)</h3>
+<style>
+  .page-wrap {
+    max-width: 460px;
+    margin: 0 auto;
+  }
 
-<div id="chatbox" style="border:1px solid #ccc;height:300px;overflow:auto;padding:10px;background-color: #f9f9f9;"></div>
+  .chat-guide {
+    margin-bottom: 14px;
+    padding: 12px 14px;
+    border: 1px solid #dbe4f0;
+    border-radius: 14px;
+    background: #f8fbff;
+    color: #334155;
+    font-size: 15px;
+    font-weight: bold;
+    line-height: 1.6;
+    text-align: center;
+  }
 
-<br>
+  .phone-frame {
+    width: 100%;
+    min-height: 600px;
+    border-radius: 34px;
+    background: #eef2f7;
+    box-shadow: 0 20px 45px rgba(15, 23, 42, 0.14);
+    padding: 14px;
+  }
 
-<input id="user_input" type="text" style="width:80%" placeholder="메시지를 입력하세요...">
-<button id="sendBtn" type="button" class="btn btn-primary">보내기</button>
+  .phone-screen {
+    background: #f7f8fb;
+    border-radius: 26px;
+    overflow: hidden;
+    height: 600px;
+    display: flex;
+    flex-direction: column;
+  }
 
-<input type="hidden" name="chat_log" id="chat_log">
+  .chat-header {
+    background: linear-gradient(180deg, #2490ff 0%, #1677f2 100%);
+    color: #ffffff;
+    padding: 18px 16px 22px;
+  }
 
-<br><br>
+  .status-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 12px;
+    opacity: 0.95;
+    margin-bottom: 12px;
+  }
 
-<button class="otree-btn-next btn btn-success" id="nextBtn" style="display:none">다음 단계로 이동</button>
+  .header-main {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+  }
+
+  .header-left,
+  .header-right {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 34px; /* 양쪽 균형을 위해 임의 크기 지정 */
+  }
+
+  .back-btn {
+    font-size: 24px;
+    line-height: 1;
+    opacity: 0.95;
+  }
+
+  .avatar {
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    background: #ffffff;
+    position: relative;
+    flex-shrink: 0;
+    box-shadow: inset 0 0 0 2px rgba(255,255,255,0.35);
+  }
+
+  .avatar::before {
+    content: "";
+    position: absolute;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: #d9e2ef;
+    top: 10px;
+    left: 17px;
+  }
+
+  .avatar::after {
+    content: "";
+    position: absolute;
+    width: 28px;
+    height: 16px;
+    border-radius: 16px 16px 10px 10px;
+    background: #d9e2ef;
+    bottom: 9px;
+    left: 12px;
+  }
+
+  .online-dot {
+    position: absolute;
+    right: 1px;
+    top: 2px;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: #22c55e;
+    border: 2px solid #2490ff;
+  }
+
+  .header-title {
+    text-align: center;
+  }
+
+  .header-title .name {
+    font-size: 17px;
+    font-weight: 700;
+    line-height: 1.2;
+  }
+
+  .header-title .status {
+    font-size: 12px;
+    opacity: 0.92;
+    margin-top: 2px;
+  }
+
+  .chat-body {
+    flex: 1;
+    padding: 14px 12px 10px;
+    overflow-y: auto;
+    background:
+      linear-gradient(rgba(247,248,251,0.96), rgba(247,248,251,0.96)),
+      radial-gradient(circle at 20% 20%, rgba(15, 23, 42, 0.035) 0 28px, transparent 29px),
+      radial-gradient(circle at 85% 30%, rgba(15, 23, 42, 0.03) 0 22px, transparent 23px);
+  }
+
+  .day-divider {
+    width: fit-content;
+    margin: 0 auto 14px;
+    padding: 6px 14px;
+    border-radius: 999px;
+    background: #e9edf3;
+    color: #555;
+    font-size: 12px;
+    font-weight: bold;
+    text-align: center;
+  }
+
+  .message-row {
+    display: flex;
+    margin-bottom: 10px;
+  }
+
+  .message-row.assistant {
+    justify-content: flex-start;
+  }
+
+  .message-row.user {
+    justify-content: flex-end;
+  }
+
+  .message-bubble {
+    max-width: 74%;
+    padding: 11px 14px;
+    border-radius: 18px;
+    font-size: 14px;
+    line-height: 1.55;
+    word-break: break-word;
+    white-space: pre-wrap;
+    box-shadow: 0 2px 8px rgba(15, 23, 42, 0.06);
+  }
+
+  .message-row.assistant .message-bubble {
+    background: #ffffff;
+    color: #384152;
+    border-top-left-radius: 8px;
+  }
+
+  .message-row.user .message-bubble {
+    background: #1f86ff;
+    color: #ffffff;
+    border-top-right-radius: 8px;
+  }
+
+  .chat-input-wrap {
+    background: rgba(255,255,255,0.96);
+    padding: 10px 10px 12px;
+    border-top: 1px solid #e7ebf2;
+  }
+
+  .chat-input-bar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .chat-input-box {
+    flex: 1;
+    border: 1px solid #d9e1ec;
+    border-radius: 999px;
+    padding: 11px 16px;
+    font-size: 14px;
+    outline: none;
+    background: #ffffff;
+  }
+
+  .chat-input-box:focus {
+    border-color: #1f86ff;
+    box-shadow: 0 0 0 3px rgba(31,134,255,0.12);
+  }
+
+  .send-btn {
+    width: 44px;
+    height: 44px;
+    border: none;
+    border-radius: 50%;
+    background: #1f86ff;
+    color: #ffffff;
+    font-size: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .send-btn:disabled {
+    opacity: 0.6;
+  }
+
+  @media (max-width: 480px) {
+    .page-wrap { max-width: 100%; }
+    .phone-frame { min-height: calc(100vh - 40px); border-radius: 24px; padding: 10px; }
+    .phone-screen { height: calc(100vh - 60px); border-radius: 20px; }
+    .message-bubble { max-width: 82%; }
+  }
+</style>
+
+<div class="page-wrap">
+  <div class="chat-guide">
+    당신은 이야기의 주인공이 되어 AI에게 당신의 감정을 이야기 해 보세요<br>
+    (총 {{ C.MAX_TURNS }}회)
+  </div>
+
+  <div class="phone-frame">
+    <div class="phone-screen">
+      <div class="chat-header">
+        <div class="status-bar">
+          <span>AI 대화</span>
+          <span>100%</span>
+        </div>
+        <div class="header-main">
+          <div class="header-left">
+            <div class="back-btn">‹</div>
+          </div>
+          <div style="display:flex; align-items:center; gap:10px;">
+            <div class="avatar">
+              <div class="online-dot"></div>
+            </div>
+            <div class="header-title">
+              <div class="name">AI</div> <div class="status">Online</div>
+            </div>
+          </div>
+          <div class="header-right">
+            </div>
+        </div>
+      </div>
+
+      <div id="chatbox" class="chat-body">
+         </div>
+
+      <div class="chat-input-wrap">
+        <div class="chat-input-bar">
+          <input id="user_input" class="chat-input-box" type="text" placeholder="메시지를 입력하세요...">
+          <button id="sendBtn" type="button" class="send-btn">➤</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <input type="hidden" name="chat_log" id="chat_log">
+
+  <div class="d-grid gap-2 mt-4 text-center">
+    <button class="otree-btn-next btn btn-success btn-lg shadow" id="nextBtn" style="display:none; width: 100%;">다음 단계로 이동</button>
+  </div>
+</div>
 
 <script>
     let ai_turns = 0;
-    const MAX_TURNS = 5; // 실험 설계에 맞춰 조절
+    const MAX_TURNS = {{ C.MAX_TURNS }};
 
     const input = document.getElementById("user_input");
     const sendBtn = document.getElementById("sendBtn");
     const nextBtn = document.getElementById("nextBtn");
     const chatbox = document.getElementById("chatbox");
+    const chatLogInput = document.getElementById("chat_log");
 
-    // 1. 서버로부터 응답을 받았을 때 실행되는 함수
+    let frontendHistory = [];
+
+    document.addEventListener("DOMContentLoaded", function() {
+        input.disabled = true;
+        sendBtn.disabled = true;
+
+        const loadingMsg = append("SYSTEM", "AI가 첫 인사를 준비 중입니다...");
+        loadingMsg.id = "loading-msg";
+
+        setTimeout(function() {
+            liveSend({'type': 'load'});
+        }, 500); 
+    });
+
     function liveRecv(data) {
-        // 로딩 메시지 제거
         const loading = document.getElementById("loading-msg");
         if (loading) loading.remove();
 
-        if (data.text) {
+        if (data.history) {
+            chatbox.innerHTML = '<div class="day-divider">대화 시작</div>'; // 빈 창 초기화 및 시작 구분선
+            ai_turns = 0;
+            frontendHistory = data.history;
+
+            data.history.forEach(function(msg) {
+                if (msg.role === 'assistant') {
+                    append("AI", msg.content);
+                    ai_turns += 1;
+                } else if (msg.role === 'user') {
+                    append("You", msg.content);
+                }
+            });
+            updateHiddenLog();
+            checkTurnLimit();
+        } 
+        else if (data.text) {
             ai_turns += 1;
             append("AI", data.text);
             
-            if (ai_turns >= MAX_TURNS) {
-                append("SYSTEM", "대화가 종료되었습니다. '다음' 버튼을 눌러주세요.");
-                nextBtn.style.display = "inline";
-                input.disabled = true;
-                sendBtn.disabled = true;
-            } else {
-                input.disabled = false;
-                sendBtn.disabled = false;
-                input.focus();
-            }
-        } else if (data.error) {
+            frontendHistory.push({"role": "assistant", "content": data.text});
+            updateHiddenLog();
+            checkTurnLimit();
+        } 
+        else if (data.error) {
             append("SYSTEM", "오류: " + data.error);
             input.disabled = false;
             sendBtn.disabled = false;
         }
     }
 
-    // 2. 서버로 메시지를 보내는 함수
     function sendMessage() {
         let text = input.value.trim();
         if (text === "" || ai_turns >= MAX_TURNS) return;
@@ -63,26 +361,52 @@
         append("You", text);
         input.value = "";
 
-        // 로딩 메시지 표시
+        frontendHistory.push({"role": "user", "content": text});
+        updateHiddenLog();
+
         const loadingMsg = append("SYSTEM", "AI가 답변을 생성 중입니다...");
         loadingMsg.id = "loading-msg";
 
-        // 🔥 중요: oTree 서버의 live_method로 데이터 전송
         liveSend({'text': text});
     }
 
+    // 디자인이 적용된 append 함수
     function append(who, msg) {
-    const line = document.createElement("div");
-    msg = msg.replace(/\n/g, "<br>");
+        const row = document.createElement("div");
 
-    line.innerHTML = "<b>" + who + ":</b> " + msg + "<br><br>";
+        if (who === "SYSTEM") {
+            row.className = "day-divider";
+            row.innerHTML = msg;
+        } else {
+            row.className = "message-row " + (who === "You" ? "user" : "assistant");
+            const bubble = document.createElement("div");
+            bubble.className = "message-bubble";
+            bubble.innerHTML = msg.replace(/\n/g, "<br>");
+            row.appendChild(bubble);
+        }
+        
+        chatbox.appendChild(row);
+        chatbox.scrollTop = chatbox.scrollHeight;
+        return row;
+    }
 
-    chatbox.appendChild(line);
-    chatbox.scrollTop = chatbox.scrollHeight;
-    return line;
-}
+    function checkTurnLimit() {
+        if (ai_turns >= MAX_TURNS) {
+            append("SYSTEM", "대화가 모두 종료되었습니다. 아래의 '다음 단계로 이동' 버튼을 눌러주세요.");
+            nextBtn.style.display = "inline-block";
+            input.disabled = true;
+            sendBtn.disabled = true;
+        } else {
+            input.disabled = false;
+            sendBtn.disabled = false;
+            input.focus();
+        }
+    }
 
-    // 이벤트 리스너 등록
+    function updateHiddenLog() {
+        chatLogInput.value = JSON.stringify(frontendHistory);
+    }
+
     sendBtn.onclick = sendMessage;
     input.onkeydown = function(e) {
         if (e.key === "Enter") {
@@ -92,4 +416,4 @@
     };
 </script>
 
-{% endblock %}
+{{ endblock }}

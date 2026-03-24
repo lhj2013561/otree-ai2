@@ -1,0 +1,182 @@
+{{ extends 'global/Page.html' }}
+
+{{ block title }}
+사전 설문
+{{ endblock }}
+
+{{ block content }}
+
+<style>
+.survey-container{
+    max-width:650px;
+    margin:0 auto;
+}
+
+.question-block{
+    margin-bottom:60px;
+    padding:20px;
+    border-bottom:1px solid #eee;
+}
+
+.question-text{
+    font-size:1.2rem;
+    font-weight:700;
+    margin-bottom:30px;
+    line-height:1.6;
+}
+
+.radio-row{
+    display:flex;
+    justify-content:space-between;
+    padding:0 10px;
+    margin-bottom:10px;
+}
+
+.radio-unit{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    flex:1;
+}
+
+input[type="radio"]{
+    transform:scale(1.7);
+    cursor:pointer;
+}
+
+.legend-row{
+    display:flex;
+    justify-content:space-between;
+    margin-top:15px;
+    font-size:0.95rem;
+    font-weight:bold;
+    color:#444;
+}
+
+.legend-item{
+    width:140px;
+    line-height:1.3;
+}
+
+.radio-unit label{
+    display:none !important;
+}
+</style>
+
+<div class="survey-container">
+
+    <div class="alert alert-secondary mb-5">
+        실험에 앞서, 평소 귀하의 생각이나 성향에 대해 자유롭게 응답해 주시기 바랍니다.
+    </div>
+
+    <div class="question-block">
+        <div class="question-text">
+            {{ form.replace_1.label }}
+        </div>
+        <div class="radio-row">
+            {{ for choice in form.replace_1 }}
+            <div class="radio-unit">
+                {{ choice }}
+            </div>
+            {{ endfor }}
+        </div>
+        <div class="legend-row">
+            <div class="legend-item text-start">1. 전혀<br>그렇지 않다</div>
+            <div class="legend-item text-end">5. 매우<br>그렇다</div>
+        </div>
+    </div>
+
+    <div class="question-block">
+        <div class="question-text">
+            {{ form.replace_2.label }}
+        </div>
+        <div class="radio-row">
+            {{ for choice in form.replace_2 }}
+            <div class="radio-unit">
+                {{ choice }}
+            </div>
+            {{ endfor }}
+        </div>
+        <div class="legend-row">
+            <div class="legend-item text-start">1. 전혀<br>그렇지 않다</div>
+            <div class="legend-item text-end">5. 매우<br>그렇다</div>
+        </div>
+    </div>
+
+    <div class="question-block">
+        <div class="question-text">
+            {{ form.replace_3.label }}
+        </div>
+        <div class="radio-row">
+            {{ for choice in form.replace_3 }}
+            <div class="radio-unit">
+                {{ choice }}
+            </div>
+            {{ endfor }}
+        </div>
+        <div class="legend-row">
+            <div class="legend-item text-start">1. 전혀<br>그렇지 않다</div>
+            <div class="legend-item text-end">5. 매우<br>그렇다</div>
+        </div>
+    </div>
+
+    <div class="question-block">
+        <div class="question-text">
+            {{ form.replace_4.label }}
+        </div>
+        <div class="radio-row">
+            {{ for choice in form.replace_4 }}
+            <div class="radio-unit">
+                {{ choice }}
+            </div>
+            {{ endfor }}
+        </div>
+        <div class="legend-row">
+            <div class="legend-item text-start">1. 전혀<br>그렇지 않다</div>
+            <div class="legend-item text-end">5. 매우<br>그렇다</div>
+        </div>
+    </div>
+
+    <div class="question-block">
+        <div class="question-text">
+            {{ form.replace_5.label }}
+        </div>
+        <div class="radio-row">
+            {{ for choice in form.replace_5 }}
+            <div class="radio-unit">
+                {{ choice }}
+            </div>
+            {{ endfor }}
+        </div>
+        <div class="legend-row">
+            <div class="legend-item text-start">1. 전혀<br>그렇지 않다</div>
+            <div class="legend-item text-end">5. 매우<br>그렇다</div>
+        </div>
+    </div>
+
+    <div class="question-block">
+        <div class="question-text">
+            {{ form.replace_6.label }}
+        </div>
+        <div class="radio-row">
+            {{ for choice in form.replace_6 }}
+            <div class="radio-unit">
+                {{ choice }}
+            </div>
+            {{ endfor }}
+        </div>
+        <div class="legend-row">
+            <div class="legend-item text-start">1. 전혀<br>그렇지 않다</div>
+            <div class="legend-item text-end">5. 매우<br>그렇다</div>
+        </div>
+    </div>
+
+    <div class="d-grid gap-2 mt-5 mb-5">
+        <button class="otree-btn-next btn btn-primary btn-lg shadow">
+            다음 단계로 이동
+        </button>
+    </div>
+
+</div>
+
+{{ endblock }}

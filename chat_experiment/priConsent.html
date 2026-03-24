@@ -1,0 +1,57 @@
+{{ extends "global/Page.html" }}
+
+{{ block title }}
+    연구참여자 개인정보 수집 ∙ 이용 동의서[온라인용] {{ endblock }}
+
+{{ block content }}
+    <div class="card mb-4">
+        <div class="card-header bg-light">
+            <h5 class="mb-0 text-center fw-bold">[ 개인정보 수집∙이용에 대한 동의 ]</h5> </div>
+        <div class="card-body">
+            <table class="table table-bordered align-middle text-break">
+                <tbody>
+                    <tr>
+                        <th scope="row" class="bg-light" style="width: 25%;">수집하는 개인정보 항목</th>
+                        <td>성별, 나이, 학력, 휴대전화번호(선택) </td>
+                    </tr>
+                    <tr>
+                        <th scope="row" class="bg-light">개인정보의 수집 및 이용목적</th>
+                        <td>
+                            <p class="mb-2">제공하신 정보는 연구수행 및 논문작성 등을 위해서 사용합니다. </p>
+                            <ul class="mb-0" style="list-style-type: none; padding-left: 0;">
+                                <li>① 연구수행을 위해 이용 : 성별, 나이, 학력 </li>
+                                <li>② 연구 크레딧 제공을 위한 이용: 휴대전화번호(선택 가능) </li>
+                                <li class="mt-1">③ 단, 이용자의 기본적 인권 침해의 우려가 있는 민감한 개인정보(인종 및 민족, 사상 및 신조, 정치적 성향 및 범죄기록 등)는 수집하지 않습니다. </li>
+                            </ul>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th scope="row" class="bg-light">개인정보의 제 3 자 제공 및 목적 외 이용</th>
+                        <td>법이 요구하거나 가톨릭대학교 성심교정 생명윤리심의위원회가 본 연구의 실시 절차와 자료의 신뢰성을 검증하기 위해 연구 결과를 직접 열람할 수 있습니다. </td>
+                    </tr>
+                    <tr>
+                        <th scope="row" class="bg-light">개인정보의 보유 및 이용기간</th>
+                        <td>수집된 개인정보의 보유기간은 연구종료 후 3 년까지 입니다. 또한 파기 (삭제) 시 연구대상자의 개인정보를 재생이 불가능한 방법으로 즉시 파기합니다. </td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="mt-3 text-muted" style="font-size: 0.95em;">
+                <p class="mb-1">※ 귀하는 이에 대한 동의를 거부할 수 있으며, 다만, 동의가 없을 경우 연구 참여가 불가능할 수 있음을 알려드립니다. </p>
+                <p class="mb-1">※ 개인정보 제공자가 동의한 내용외의 다른 목적으로 활용하지 않음 </p>
+                <p class="mb-1">※ 만 18 세 미만인 경우 반드시 법적대리인의 동의가 필요함 </p>
+                <p class="mb-0 mt-3 fw-bold text-dark">「개인정보보호법」등 관련 법규에 의거하여 상기 본인은 위와 같이 개인정보 수집 및 활용에 동의함. </p>
+            </div>
+        </div>
+    </div>
+
+    <div class="card border-primary mb-3">
+        <div class="card-body">
+            {{ formfields }} </div>
+    </div>
+
+    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+        <button type="submit" class="btn btn-primary btn-lg">다음 단계로 이동</button>
+    </div>
+
+{{ endblock }}
