@@ -18,7 +18,7 @@ class C(BaseConstants):
 
     NAME_IN_URL = 'chat_experiment'
     PLAYERS_PER_GROUP = None
-    NUM_ROUNDS = 4
+    NUM_ROUNDS = 3
     MAX_TURNS = 6
 
     GROUPS = ['G1','G2','G3','G4']
@@ -33,8 +33,7 @@ class C(BaseConstants):
     SCENARIOS = [
     "친한 친구들과 함께 있는 자리에서, 한 친구가 갑자기 당신의 과거 아픈 경험을 꺼내며 웃음거리로 만들었습니다. 그 경험은 다시는 생각하고 싶지 않은 일이지만 이 이야기를 들은 친구들은 다같이 웃었고. 그 친구는 별일 아니라는 듯 행동합니다. 친구는 잘못된게 없다는 태도이며 적어도 3달정도는 그 모임에 나가야 합니다.",
     "당신은 친구의 중요한 비밀을 지켜주었지만, 어느 순간 그 비밀이 다른 사람들에게 퍼지게 되었고 주변 사람들은 당신이 그 이야기를 퍼뜨렸다고 의심하기 시작했습니다. 친구는 당신이 비밀을 퍼뜨리고 다닌 사람으로 주변에 이야기 하고 있습니다. 또한 그 이야기를 들은 친구들은 당신과 이야기 하려고 하지 않는 것 같습니다.",
-    "팀 프로젝트에서 당신은 중요한 부분을 맡아 열심히 준비했지만, 발표 자리에서 다른 팀원이 당신의 아이디어와 작업을 자신의 것처럼 설명했습니다. 팀원은 마치 자신의 업적인 것 처럼 당당하고 자연스럽게 이야기 하였고 발표는 계속 진행되었습니다. 다른 사람들은 이를 칭찬하고 그 사람의 성과가 되었고 당신은 아무것도 안한 사람으로 여겨지고 있습니다.",
-    "친구들과 함께 여행을 가기로 약속하고 단체 채팅방에서 계획을 이야기하고 있었습니다. 당신도 일정과 관련된 의견을 몇 번 보냈지만, 다른 사람들은 당신의 메시지에는 거의 반응하지 않고 서로의 대화만 이어갔습니다. 이후에도 당신의 말은 계속 무시된 채 계획이 진행되는 것처럼 보였습니다. 항공권 예약일은 다가오지만 당신의 의견은 전혀 반영되지 않고 있으며 당신이 먹을 수 없는 음식들로 일정이 채워지고 있습니다."
+    "팀 프로젝트에서 당신은 중요한 부분을 맡아 열심히 준비했지만, 발표 자리에서 다른 팀원이 당신의 아이디어와 작업을 자신의 것처럼 설명했습니다. 팀원은 마치 자신의 업적인 것 처럼 당당하고 자연스럽게 이야기 하였고 발표는 계속 진행되었습니다. 다른 사람들은 이를 칭찬하고 그 사람의 성과가 되었고 당신은 아무것도 안한 사람으로 여겨지고 있습니다."
     ]
 
 
@@ -110,10 +109,18 @@ class Player(BasePlayer):
     post_efii_1 = make_likert_field("나는 이 상황을 잘 해결할 수 있을것 같다.")
     post_efii_2 = make_likert_field("나는 이 상황에 효과적으로 대처할 수 있다.")
     post_efii_3 = make_likert_field("나는 이 상황을 잘 극복할 수 있을 것 같다.")
-    percieved_empathy_1 = make_likert_field("나는 대화를 하면서 나의 감정을 정확히 이해받고 있다고 느꼈다.")
-    percieved_empathy_2 = make_likert_field("나는 대화를 하면서 나의 상황이 잘 파악되고 있다고 느꼈다.")
-    percieved_empathy_3 = make_likert_field("나는 대화를 하면서 정서적으로 지지받고 있다고 느꼈다.")
-    percieved_empathy_4 = make_likert_field("나는 대화를 하면서 따뜻하게 공감받고 있다고 느꼈다")
+    percieved_empathy_1 = make_likert_field("나의 감정을 정확히 이해받고 있다고 느꼈다.")
+    percieved_empathy_2 = make_likert_field("나의 상황이 잘 파악되고 있다고 느꼈다.")
+    percieved_empathy_3 = make_likert_field("정서적으로 지지받고 있다고 느꼈다.")
+    percieved_empathy_4 = make_likert_field("따뜻하게 공감받고 있다고 느꼈다.")
+    percieved_empathy_5 = make_likert_field("감정이 안정되는 느낌이 들었다.")
+    percieved_empathy_6 = make_likert_field("상호작용에서 위로를 얻었다.")
+    percieved_empathy_7 = make_likert_field("인간보다 AI와 이야기하는 것이 더 편할 수 있다고 느꼈다.")
+    percieved_empathy_8 = make_likert_field("내 생각을 정리하고 이해하는 데 도움을 받았다.")
+    percieved_empathy_9 = make_likert_field("AI는 나에게 심리적으로 안전한 공간처럼 느껴진다.")
+    percieved_empathy_10 = make_likert_field("AI는 내가 감정을 표현할 수 있는 안정된 대상이다.")
+    percieved_empathy_11 = make_likert_field("다른 부정적 사건을 경험하면 AI와 대화하려 할 것 같다.")
+    
 
     #관계대체 신념
     replace_1 = make_likert_field("AI와 고민을 나누는 것은 괜찮다고 생각한다.")
@@ -150,7 +157,7 @@ def creating_session(subsession):
 
             player.participant.vars['group_condition'] = group
 
-            order = [0,1,2,3]
+            order = [0,1,2]
             random.shuffle(order)
 
             player.participant.vars['scenario_order'] = order
@@ -248,7 +255,14 @@ class end_empathy(Page):
         'percieved_empathy_1', 
         'percieved_empathy_2', 
         'percieved_empathy_3', 
-        'percieved_empathy_4'
+        'percieved_empathy_4',
+        'percieved_empathy_5',
+        'percieved_empathy_6',
+        'percieved_empathy_7',
+        'percieved_empathy_8',
+        'percieved_empathy_9',
+        'percieved_empathy_10',
+        'percieved_empathy_11'
     ]    
     @staticmethod
     def is_displayed(player):
