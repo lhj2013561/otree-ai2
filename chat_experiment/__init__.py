@@ -363,7 +363,7 @@ Response style:
 - Clear and practical
 - Slightly neutral tone
 - Write 3–4 sentences
-- Use two short paragraphs
+- Use 2~3 short paragraphs
 - Total length: 300–400 characters"""
         else:
             prompt = """대화를 정리하고 마무리하십시오.150자 이내."""
