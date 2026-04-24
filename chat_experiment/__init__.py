@@ -21,13 +21,11 @@ class C(BaseConstants):
     NUM_ROUNDS = 3
     MAX_TURNS = 6
 
-    GROUPS = ['G1','G2','G3','G4']
+    GROUPS = ['G1','G2']
 
     TURN_SEQUENCE = {
         "G1": ["intro","solution","solution","solution","solution","closing"],
-        "G2": ["intro","validation","validation","validation","validation","closing"],
-        "G3": ["intro","solution","solution","validation","validation","closing"],
-        "G4": ["intro","validation","validation","solution","solution","closing"],
+        "G2": ["intro","validation","validation","validation","validation","closing"]
     }
 
     SCENARIOS = [
