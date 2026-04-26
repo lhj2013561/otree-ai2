@@ -302,36 +302,45 @@
     const chatLogInput = document.getElementById("chat_log");
 
     let frontendHistory = [];
-    let loadRetryTimer; // 자동 재시도 타이머 변수
 
     document.addEventListener("DOMContentLoaded", function() {
         input.disabled = true;
         sendBtn.disabled = true;
 
-        // 이전 피험자들과 완벽히 동일한 안내 문구
-        const loadingMsg = append("SYSTEM", "AI가 첫 인사를 준비 중입니다...");
+        // 안내 문구와 숨겨진 시작 버튼을 함께 렌더링 (디자인을 예쁘게 다듬었습니다)
+        const startHtml = `
+            AI가 첫 인사를 준비 중입니다...
+            <button id="manualStartBtn" style="display:none; margin-top:12px; padding:10px 16px; font-size:14px; border-radius:20px; border:none; background:#1f86ff; color:#fff; cursor:pointer; width:100%; font-weight:bold; box-shadow: 0 4px 6px rgba(31, 134, 255, 0.2);">
+                대화 시작하기 ➤
+            </button>
+        `;
+        
+        const loadingMsg = append("SYSTEM", startHtml);
         loadingMsg.id = "loading-msg";
 
-        // 1. 최초 로드 신호 (0.5초 후)
+        // 1. 최초 로드 신호 (0.8초 후 시도)
         setTimeout(function() {
             liveSend({'type': 'load'});
-        }, 500); 
+        }, 800); 
 
-        // 2. 만약 아이폰 등에서 위 신호가 씹혔을 경우를 대비한 '몰래 재시도' 로직 (3초 간격)
-        loadRetryTimer = setInterval(function() {
-            // 대화가 아직 시작되지 않았다면 서버로 다시 신호를 보냄
+        // 2. 만약 3.5초가 지나도 대화가 시작되지 않으면 '대화 시작하기' 버튼을 노출
+        setTimeout(function() {
             if (ai_turns === 0) {
-                liveSend({'type': 'load'});
+                const btn = document.getElementById('manualStartBtn');
+                if (btn) {
+                    btn.style.display = 'block'; // 버튼 보이기
+                    btn.onclick = function() {
+                        this.innerText = "연결 중입니다...";
+                        this.style.opacity = "0.7";
+                        this.disabled = true;
+                        liveSend({'type': 'load'}); // 사용자의 직접 클릭을 통한 신호 전송 (아이폰 통과 확률 99%)
+                    };
+                }
             }
-        }, 8000);
+        }, 3500);
     });
 
     function liveRecv(data) {
-        // 서버에서 어떤 응답이든 오면 재시도 타이머 즉시 정지
-        if (loadRetryTimer) {
-            clearInterval(loadRetryTimer);
-        }
-
         const loading = document.getElementById("loading-msg");
         if (loading) {
             loading.style.display = 'none'; // 구형 사파리 에러 방지용 숨김 처리
@@ -362,8 +371,6 @@
             checkTurnLimit();
         } 
         else if (data.error) {
-            // 에러가 났을 때도 타이머는 멈춰야 함
-            if (loadRetryTimer) clearInterval(loadRetryTimer);
             append("SYSTEM", "오류: " + data.error);
             input.disabled = false;
             sendBtn.disabled = false;
